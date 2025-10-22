@@ -16,29 +16,32 @@ const port = process.env.PORT || 4000;
 
 connectDb();
 cloudinaryConnect();
+
 const allowedOrigins = [
   'http://localhost:5173', 
   'https://grocerym-app.vercel.app'
 ];
+
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
-
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, false); // Don't throw error
     }
   },
-  credentials: true, methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.get('/', (req, res) => {
-  res.send('Working On')
+  res.json({ success: true, message: 'API Working' })
 })
 
 app.use('/api/user', userRoute)
@@ -48,6 +51,18 @@ app.use('/api/cart', cartRouter)
 app.use('/api/address', addressRouter)
 app.use('/api/order', orderRouter)
 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`)
-})
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: err.message });
+});
+
+// Only listen in local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`)
+  })
+}
+
+// 🚨 CRITICAL: Export for Vercel
+export default app;
