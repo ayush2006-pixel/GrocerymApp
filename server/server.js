@@ -16,10 +16,26 @@ const port = 4000 || process.env.port;
 
 await connectDb();
 await cloudinaryConnect();
-const allowedOrigins = ['http://localhost:4000/','http://localhost:5173','https://grocerym-app.vercel.app'];
+const allowedOrigins = [
+  'http://localhost:4000',  // Remove trailing slash
+  'http://localhost:5173',
+  'https://grocerym-app-fdmv.vercel.app'  // Your frontend URL
+];
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({origin : allowedOrigins , credentials : true}));
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.get('/', (req, res) => {
   res.send('Working On')

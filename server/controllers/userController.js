@@ -18,11 +18,11 @@ export const register = async (req, res) => {
         const user = await User.create({ name, email, password: hashedPassword });
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
-            httpOnly: true,  // Prevents JavaScript from reading the cookie. Stops attackers from stealing your token with XSS. Definitely required.
-            secure: process.env.NODE_ENV === "production", // Sends cookie only over HTTPS. In development you can keep it false, but in production it must be true. Required for production.
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", //Helps prevent CSRF (Cross-Site Request Forgery). "strict" = safest, but may block cross-site usage. "lax" = more flexible (e.g., allows login redirects). Choose based on your app’s needs.
-            maxAge: 7 * 24 * 60 * 60 * 1000, // Controls how long the cookie lives.
-        })
+    httpOnly: true,
+    secure: true,  // Must be true for cross-domain
+    sameSite: "none",  // Required for cross-domain cookies
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+})
         return res.json({ success: true, message: "User Registered Successfully", user: { _id: user._id, email: user.email, name: user.name } });
     } catch (error) {
         console.error(error.message);
@@ -61,13 +61,11 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            domain: process.env.NODE_ENV === "production" ? ".vercel.app" : "localhost",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-
+    httpOnly: true,
+    secure: true,  // Must be true for cross-domain
+    sameSite: "none",  // Required for cross-domain cookies
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+})
 
         return res.json({
             success: true,
@@ -89,8 +87,14 @@ export const login = async (req, res) => {
 
 export const isAuth = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId } = req.body; // This comes from AuthUser middleware
+        if (!userId) {
+            return res.json({ success: false, message: "Not Authorized" });
+        }
         const user = await User.findById(userId).select("-password");
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
+        }
         return res.json({ success: true, user })
     } catch (error) {
         console.log(error.message);
@@ -104,14 +108,13 @@ export const logout = async (req, res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            domain: process.env.NODE_ENV === "production" ? ".vercel.app" : "localhost",
-        });
+            secure: true,  // Match login/register
+            sameSite: "none",  // Match login/register
+        })
+        return res.json({ success: true, message: "Successfully Logout" })
 
-        return res.json({ success: true, message: "Successfully Logout" });
     } catch (error) {
         console.log(error.message);
-        return res.json({ success: false, message: error.message });
+        return res.json({ success: false, message: error.message })
     }
 }
