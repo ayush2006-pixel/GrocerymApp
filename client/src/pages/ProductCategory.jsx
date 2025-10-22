@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { categories } from '../assets/assets';
 import Product_cart from '../components/Product_cart';
 
-const Productcategoru = () => {
+const ProductCategory = () => {
   const { products } = useAppContext();
   const { category } = useParams();
 
@@ -46,4 +46,4 @@ const Productcategoru = () => {
   );
 };
 
-export default Productcategoru;
+export default ProductCategory;
