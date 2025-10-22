@@ -7,9 +7,9 @@ import Footer from './components/Footer';
 import { useAppContext } from './context/AppContext';
 import Login from './components/Login';
 import Allproducts from './pages/Allproducts';
-import Productcategoru from './pages/Productcategoru';
-import ProductDetails from './pages/Productdetails';
-import Cart from './pages/Cart';
+import Productcategory from './pages/Productcategory';
+import ProductDetails from './pages/ProductDetails';
+import Cart from './pages/cart';
 import Addaddress from './pages/Addaddress';
 import Myorders from './pages/Myorders';
 import Sellerlogin from './components/seller/Sellerlogin';
@@ -33,7 +33,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Allproducts />} />
-          <Route path="/products/:category" element={<Productcategoru />} />
+          <Route path="/products/:category" element={<Productcategory />} />
           <Route path="/products/:category/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/add-address" element={<Addaddress />} />
