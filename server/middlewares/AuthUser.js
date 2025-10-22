@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";  // ADD THIS LINE
+
 const AuthUser = async (req, res, next) => {
   console.log('Cookies received:', req.cookies);  // Debug line
   console.log('Headers:', req.headers.cookie);    // Debug line
