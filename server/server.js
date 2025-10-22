@@ -19,7 +19,7 @@ await cloudinaryConnect();
 const allowedOrigins = [
   'http://localhost:4000',  // Remove trailing slash
   'http://localhost:5173',
-  'https://grocerym-app-fdmv.vercel.app'  // Your frontend URL
+  'https://grocerym-app.vercel.app/'  // Your frontend URL
 ];
 app.use(express.json());
 app.use(cookieParser());
