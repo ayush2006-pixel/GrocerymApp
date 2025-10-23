@@ -38,6 +38,7 @@ const Navbar = () => {
             </NavLink>
 
             <div className="hidden sm:flex items-center gap-8">
+                <NavLink to='/seller' className="text-sm border border-gray-500/70 rounded-full px-3 py-1" >Seller Dashboard</NavLink>
                 <NavLink to='/'>Home</NavLink>
                 <NavLink to='/products'>All Product</NavLink>
                 <NavLink to='/'>Contact</NavLink>
@@ -90,6 +91,7 @@ const Navbar = () => {
 
                     }
                     <NavLink to='/' onClick={() => setOpen(false)}>Contact</NavLink>
+                    <NavLink to='/seller' className="text-sm border border-gray-500/70 rounded-full px-3 py-1" >Seller Dashboard</NavLink>
                     {!user ? (
                         <button onClick={() => {
                             setOpen(false);

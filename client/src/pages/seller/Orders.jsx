@@ -75,10 +75,10 @@ const Orders = () => {
     if (dateFilter) {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      
+
       filtered = filtered.filter(order => {
         const orderDate = new Date(order.createdAt);
-        
+
         switch (dateFilter) {
           case 'today':
             return orderDate >= today;
@@ -225,7 +225,7 @@ const Orders = () => {
         {/* Search and Filter Section */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Search & Filter Orders</h2>
-          
+
           {/* Search Bar */}
           <div className="mb-4">
             <div className="relative">
@@ -350,7 +350,7 @@ const Orders = () => {
                 {dateFilter && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-orange-100 text-orange-800">
                     Date: {dateFilterOptions.find(opt => opt.value === dateFilter)?.label}
-                    <button onClick={() => {setDateFilter(''); setStartDate(''); setEndDate('');}} className="ml-1 hover:text-orange-600">×</button>
+                    <button onClick={() => { setDateFilter(''); setStartDate(''); setEndDate(''); }} className="ml-1 hover:text-orange-600">×</button>
                   </span>
                 )}
               </div>
@@ -367,13 +367,13 @@ const Orders = () => {
                 {orders.length === 0 ? "No orders found" : "No orders match your filters"}
               </h3>
               <p className="text-gray-500">
-                {orders.length === 0 
+                {orders.length === 0
                   ? "Orders will appear here when customers place them"
                   : "Try adjusting your search criteria or clearing filters"
                 }
               </p>
               {orders.length > 0 && (
-                <button 
+                <button
                   onClick={clearAllFilters}
                   className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
@@ -435,19 +435,22 @@ const Orders = () => {
                       <div className="space-y-3">
                         {order.items.map((item, index) => (
                           <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+
                             <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center overflow-hidden">
                               <img
-                                src={item.product.image?.[0] || assets.box_icon}
-                                alt={item.product.name}
+                                src={item.product?.image?.[0] || assets.box_icon}
+                                alt={item.product?.name || 'Product'}
                                 className="w-full h-full object-cover"
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium text-gray-900 truncate">{item.product.name}</p>
+                              <p className="font-medium text-gray-900 truncate">
+                                {item.product?.name || 'Product Unavailable'}
+                              </p>
                               <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                             </div>
                             <p className="font-medium text-gray-900">
-                              {currency}{(item.product.offerPrice * item.quantity).toFixed(2)}
+                              {currency}{((item.product?.offerPrice || 0) * item.quantity).toFixed(2)}
                             </p>
                           </div>
                         ))}
@@ -486,8 +489,8 @@ const Orders = () => {
                             <span>Payment Status:</span>
                             <span
                               className={`font-medium ${order.isPaid || order.status === "Delivered"
-                                  ? "text-green-600"
-                                  : "text-orange-600"
+                                ? "text-green-600"
+                                : "text-orange-600"
                                 }`}
                             >
                               {order.isPaid || order.status === "Delivered" ? "Paid" : "Pending"}

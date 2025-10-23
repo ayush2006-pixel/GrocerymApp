@@ -18,32 +18,41 @@ connectDb();
 cloudinaryConnect();
 
 const allowedOrigins = [
-  'http://localhost:5173', 
+  'http://localhost:5173',
   'https://grocerym-app.vercel.app'
 ];
 
+// Apply middleware BEFORE routes
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
   origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(null, false); // Don't throw error
+      // Return error instead of silently blocking
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Set-Cookie'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
+// Health check route
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'API Working' })
 })
 
+// API routes
 app.use('/api/user', userRoute)
 app.use('/api/seller', sellerRouter)
 app.use('/api/product', ProductRouter)
@@ -51,10 +60,30 @@ app.use('/api/cart', cartRouter)
 app.use('/api/address', addressRouter)
 app.use('/api/order', orderRouter)
 
-// Error handling
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ 
+    success: false, 
+    message: `Route ${req.originalUrl} not found` 
+  });
+});
+
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ success: false, message: err.message });
+  console.error('Error:', err);
+  
+  // Handle CORS errors
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ 
+      success: false, 
+      message: 'CORS policy: Origin not allowed' 
+    });
+  }
+  
+  res.status(err.status || 500).json({ 
+    success: false, 
+    message: err.message || 'Internal server error' 
+  });
 });
 
 // Only listen in local development
@@ -64,5 +93,4 @@ if (process.env.NODE_ENV !== 'production') {
   })
 }
 
-// 🚨 CRITICAL: Export for Vercel
 export default app;
