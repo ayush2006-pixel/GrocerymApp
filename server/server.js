@@ -14,9 +14,6 @@ import orderRouter from "./routes/orderRouter.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-connectDb();
-cloudinaryConnect();
-
 const allowedOrigins = [
   'http://localhost:5173',
   'https://grocerym-app.vercel.app'
@@ -29,13 +26,11 @@ app.use(cookieParser());
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      // Return error instead of silently blocking
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -72,7 +67,6 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   
-  // Handle CORS errors
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({ 
       success: false, 
@@ -86,11 +80,26 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Only listen in local development
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`)
-  })
-}
+// Start server function
+const startServer = async () => {
+  try {
+    // Wait for DB connection first
+    await connectDb();
+    cloudinaryConnect();
+    
+    // Only start listening after DB is connected
+    app.listen(port, () => {
+      console.log(`🚀 Server is running on port ${port}`);
+      console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+    
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer();
 
 export default app;
