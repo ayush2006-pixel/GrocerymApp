@@ -9,7 +9,7 @@ const Navbar = () => {
     const { user, setUser, setShowUserLogin, navigate, setSearchQuery, searchQuery, getcartcount, getcartamount, axios, setcartItems } = useAppContext();
     const logout = async () => {
         try {
-            const { data } = await axios.get("/api/user/logout")
+            const { data } = await axios.post("/api/user/logout")
             if (data.success) {
                 toast.success(data.message)
                 setcartItems({})
