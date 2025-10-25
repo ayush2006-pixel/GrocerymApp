@@ -18,11 +18,11 @@ export const register = async (req, res) => {
         const user = await User.create({ name, email, password: hashedPassword });
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,  // Must be true for cross-domain
-    sameSite: "none",  // Required for cross-domain cookies
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-})
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
         return res.json({ success: true, message: "User Registered Successfully", user: { _id: user._id, email: user.email, name: user.name } });
     } catch (error) {
         console.error(error.message);
@@ -61,11 +61,11 @@ export const login = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,  // Must be true for cross-domain
-    sameSite: "none",  // Required for cross-domain cookies
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-})
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
 
         return res.json({
             success: true,
@@ -108,8 +108,8 @@ export const logout = async (req, res) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            secure: true,  // Match login/register
-            sameSite: "none",  // Match login/register
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict"
         })
         return res.json({ success: true, message: "Successfully Logout" })
 
