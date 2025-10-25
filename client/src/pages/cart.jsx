@@ -537,7 +537,7 @@ const Cart = () => {
                     ) : paymentOptions === "Online" ? (
                         `Pay Online ${currency}${getTotalAmount()}`
                     ) : (
-                        "CheckOut"
+                        "Checkout"
                     )}
                 </button>
 

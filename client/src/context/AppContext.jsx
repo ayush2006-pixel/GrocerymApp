@@ -43,12 +43,15 @@ export const AppContextProvider = ({ children }) => {
             if (data.success) {
                 setUser(data.user)
                 setcartItems(data.user.cartItems)
+            } else {
+                setUser(null);
+                setcartItems({});
             }
 
         } catch (error) {
             setUser(null);
+            setcartItems({});
             console.log(error.message);
-
         }
     }
 
@@ -128,23 +131,23 @@ export const AppContextProvider = ({ children }) => {
 
     //Update DB cart items
     useEffect(() => {
-        if(!user) return;
-     const updateCart = async () => {
-        try {
-            const { data } = await axios.post("/api/cart/update" , {cartItems})
-            if(!data.success){
-                toast.error(data.message)
+        if (!user) return;
+        const updateCart = async () => {
+            try {
+                const { data } = await axios.post("/api/cart/update", { cartItems })
+                if (!data.success) {
+                    toast.error(data.message)
+                }
+            } catch (error) {
+                toast.error(error.message)
             }
-        } catch (error) {
-            toast.error(error.message)
         }
-     }
-     if(user){
-        updateCart()
-     }
-    },[cartItems])
+        if (user) {
+            updateCart()
+        }
+    }, [cartItems])
 
-    const value = { navigate, user, setUser, setIsSeller, isSeller, showUserLogin, setShowUserLogin, products, currency, addTocart, updateCart, setcartItems , removeitemfromcart, cartItems, searchQuery, setSearchQuery, getcartamount, getcartcount, axios, fetchproducts }
+    const value = { navigate, user, setUser, setIsSeller, isSeller, showUserLogin, setShowUserLogin, products, currency, addTocart, updateCart, setcartItems, removeitemfromcart, cartItems, searchQuery, setSearchQuery, getcartamount, getcartcount, axios, fetchproducts }
     return <AppContext.Provider value={value}>
         {children}
     </AppContext.Provider>
