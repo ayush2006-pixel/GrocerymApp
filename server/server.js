@@ -16,6 +16,7 @@ const port = process.env.PORT || 4000;
 
 const allowedOrigins = [
   'http://localhost:5173',
+  'https://grocerym-app.vercel.app',
   'https://grocerym-app.vercel.app'
 ];
 
