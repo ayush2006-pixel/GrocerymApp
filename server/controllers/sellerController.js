@@ -27,22 +27,13 @@ export const seller_login = async (req, res) => {
 // Seller_Auth -> localhost/api/seller/is-auth
  
 export const seller_isAuth = async (req, res) => {
-    const { seller_token } = req.cookies;
-
-    if (!seller_token) {
-        return res.json({ success: false, message: "Not Authorized" });
-    }
-
-    try {
-        const tokenDecode = jwt.verify(seller_token, process.env.JWT_SECRET);
-        
-        if (tokenDecode.email === process.env.SELLER_EMAIL) {
-            return res.json({ success: true, message: "Authorized" });
-        } else {
-            return res.json({ success: false, message: "Not Authorized" });
-        }
+     try {
+        return res.json({ 
+            success: true, 
+            message: "Authorized" 
+        });
     } catch (error) {
-        return res.json({ success: false, message: "Invalid token" });
+        return res.json({ success: false, message: error.message });
     }
 }
 
