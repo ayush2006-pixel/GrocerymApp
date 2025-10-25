@@ -5,7 +5,7 @@ import AuthUser from "../middlewares/AuthUser.js";
 const userRoute = express.Router();
 userRoute.post("/register" , register);
 userRoute.post("/login" , login);
-userRoute.get("/is-auth" , AuthUser ,isAuth);
+userRoute.post("/is-auth" , AuthUser ,isAuth);
 userRoute.post("/logout" , AuthUser, logout);
 
 export default userRoute;
