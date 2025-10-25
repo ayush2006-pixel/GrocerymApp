@@ -10,18 +10,18 @@ const Sellerlogin = () => {
     const onSubmitHandeller = async (event) => {
     try {
         event.preventDefault();
-        console.log("Attempting seller login..."); // ✅ Add
+        // console.log("Attempting seller login..."); // ✅ Add
         
         const { data } = await axios.post("/api/seller/login", { email, password });
         
-        console.log("Login response:", data); // ✅ Add
+        // console.log("Login response:", data); // ✅ Add
         
         if (data.success) {
             toast.success(data.message);
             setIsSeller(true);
             
             // ✅ Check if cookie was set
-            console.log("All cookies:", document.cookie);
+            // console.log("All cookies:", document.cookie);
             
             navigate("/seller");
         } else {
