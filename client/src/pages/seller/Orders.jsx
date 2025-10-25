@@ -124,8 +124,7 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
         setLoading(true);
-        console.log("🔍 Fetching orders..."); // ✅ Add
-        console.log("Cookies being sent:", document.cookie); // ✅ Add
+        // console.log("🔍 Fetching orders..."); // ✅ Add
         
         const { data } = await axios.get("/api/order/seller");
         
