@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios"
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.baseURL = "";
 
 // withCredentials = true → “Always send cookies/auth with requests.”
 // baseURL = ... → “Prefix all requests with this backend URL automatically.”
