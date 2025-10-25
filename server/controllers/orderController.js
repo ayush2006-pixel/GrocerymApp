@@ -172,6 +172,8 @@ export const getUserOrders = async (req, res) => {
 // Get All Orders {for Admin/Seller} -> /api/order/seller
 export const getAllOrders = async (req, res) => {
     try {
+        console.log("✅ Seller authenticated, fetching all orders..."); // ✅ Add
+        
         const orders = await Order.find({
             $or: [
                 { paymentType: "COD" }, 
@@ -179,8 +181,11 @@ export const getAllOrders = async (req, res) => {
             ]
         }).populate("items.product address").sort({ createdAt: -1 });
         
+        console.log("📦 Found orders:", orders.length); // ✅ Add
+        
         return res.json({ success: true, orders });
     } catch (error) {
+        console.error("❌ Error fetching orders:", error); // ✅ Add
         res.json({ success: false, message: error.message });
     }
 };

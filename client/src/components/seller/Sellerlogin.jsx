@@ -8,20 +8,30 @@ const Sellerlogin = () => {
     const [password, setPassword] = useState("");
 
     const onSubmitHandeller = async (event) => {
-        try {
-            event.preventDefault();
-            const { data } = await axios.post("/api/seller/login", { email, password })
-            if (data.success) {
-                toast.success(data.message);
-                setIsSeller(true);
-                navigate("/seller")
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            toast.error(error.message)
+    try {
+        event.preventDefault();
+        console.log("Attempting seller login..."); // ✅ Add
+        
+        const { data } = await axios.post("/api/seller/login", { email, password });
+        
+        console.log("Login response:", data); // ✅ Add
+        
+        if (data.success) {
+            toast.success(data.message);
+            setIsSeller(true);
+            
+            // ✅ Check if cookie was set
+            console.log("All cookies:", document.cookie);
+            
+            navigate("/seller");
+        } else {
+            toast.error(data.message);
         }
+    } catch (error) {
+        console.error("Login error:", error); // ✅ Change to console.error
+        toast.error(error.message);
     }
+}
 
     useEffect(() => {
         if (isSeller) {

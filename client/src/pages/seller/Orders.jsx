@@ -123,20 +123,28 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      setLoading(true);
-      const { data } = await axios.get("/api/order/seller");
-      // console.log(data.orders);
-      if (data.success) {
-        setOrders(data.orders);
-      } else {
-        toast.error(data.message);
-      }
+        setLoading(true);
+        console.log("🔍 Fetching orders..."); // ✅ Add
+        console.log("Cookies being sent:", document.cookie); // ✅ Add
+        
+        const { data } = await axios.get("/api/order/seller");
+        
+        console.log("📦 Orders response:", data); // ✅ Add
+        
+        if (data.success) {
+            console.log("✅ Orders count:", data.orders.length); // ✅ Add
+            setOrders(data.orders);
+        } else {
+            console.log("❌ Error:", data.message); // ✅ Add
+            toast.error(data.message);
+        }
     } catch (error) {
-      toast.error(error.message);
+        console.error("❌ Fetch error:", error); // ✅ Add
+        toast.error(error.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   const deleteOrder = async (orderId) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
