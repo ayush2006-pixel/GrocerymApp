@@ -110,6 +110,7 @@ export const logout = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",  // ✅ Dynamic
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",  // ✅ Dynamic
+            path: '/'  // ✅ Add this
         })
         return res.json({ success: true, message: "Successfully Logout" })
 
