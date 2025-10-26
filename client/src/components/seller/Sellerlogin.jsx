@@ -4,61 +4,78 @@ import toast from 'react-hot-toast';
 
 const Sellerlogin = () => {
     const { isSeller, setIsSeller, navigate, axios } = useAppContext();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("admin@mail.com");
+    const [password, setPassword] = useState("Ayush12345");
 
-    const onSubmitHandeller = async (event) => {
-    try {
+    const onSubmitHandler = async (event) => {
         event.preventDefault();
-        // console.log("Attempting seller login..."); // ✅ Add
-        
-        const { data } = await axios.post("/api/seller/login", { email, password });
-        
-        // console.log("Login response:", data); // ✅ Add
-        
-        if (data.success) {
-            toast.success(data.message);
-            setIsSeller(true);
-            
-            // ✅ Check if cookie was set
-            // console.log("All cookies:", document.cookie);
-            
-            navigate("/seller");
-        } else {
-            toast.error(data.message);
+        try {
+            const { data } = await axios.post("/api/seller/login", { email, password });
+
+            if (data.success) {
+                toast.success(data.message);
+                setIsSeller(true);
+                navigate("/seller");
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error(error.message);
         }
-    } catch (error) {
-        console.error("Login error:", error); // ✅ Change to console.error
-        toast.error(error.message);
-    }
-}
+    };
 
     useEffect(() => {
         if (isSeller) {
-            navigate("/seller")
+            navigate("/seller");
         }
-    }, [isSeller])
+    }, [isSeller]);
 
+    return (
+        !isSeller && (
+            <form 
+                onSubmit={onSubmitHandler}
+                className='min-h-screen flex items-center text-sm text-gray-600 select-none' // disable selection globally in form
+                onContextMenu={(e) => e.preventDefault()} // disable right-click
+            >
+                <div className='flex flex-col gap-5 m-auto items-start p-8 sm:p-12 min-w-80 sm:min-w-88 rounded-lg shadow-xl border border-gray-200'>
+                    <p className='text-2xl font-medium m-auto'>
+                        <span className='text-primary'>Seller</span> Login
+                    </p>
 
-    return !isSeller && (
-        <form onSubmit={onSubmitHandeller} className='min-h-screen flex items-center text-sm text-gray-600'>
-            <div className=' flex flex-col gap-5 m-auto items-start p-8 p-12 min-w-80 sm:min-w-88 rounded-lg shadow-xl border border-gray-200  '>
-                <p className='text-2xl font-medium m-auto'><span className='text-primary'>Seller</span> Login</p>
+                    <div className='w-full'>
+                        <p>Email</p>
+                        <input 
+                            onChange={(e) => setEmail(e.target.value)} 
+                            value={email} 
+                            type="email" 
+                            placeholder='Enter Email' 
+                            required 
+                            className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary' 
+                        />
+                    </div>
 
+                    <div className='w-full'>
+                        <p>Password</p>
+                        <input
+                            type="password"
+                            value={password}
+                            readOnly
+                            className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary select-none caret-transparent'
+                            onCopy={(e) => e.preventDefault()}
+                            onCut={(e) => e.preventDefault()}
+                            onPaste={(e) => e.preventDefault()}
+                            onContextMenu={(e) => e.preventDefault()}
+                        />
+                    </div>
 
-                <div className='w-full'>
-                    <p>Email</p>
-                    <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" placeholder='Enter Email' required className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary' />
+                    <button className='bg-primary text-white w-full py-2 rounded-md cursor-pointer'>
+                        Login
+                    </button>
                 </div>
-                <div className='w-full'>
-                    <p>Password</p>
-                    <input onChange={(e) => setPassword(e.target.value)} value={password} type="password" placeholder='Enter Password' required className='border border-gray-200 rounded w-full p-2 mt-1 outline-primary' />
-                </div>
+            </form>
+        )
+    );
+};
 
-                <button className='bg-primary text-white w-full py-2 rounded-md cursor-pointer'>Login</button>
-            </div>
-        </form>
-    )
-}
-
-export default Sellerlogin
+export default Sellerlogin;
